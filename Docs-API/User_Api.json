@@ -1,0 +1,336 @@
+{
+    
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Authentication user Api for todolist",
+        "description": "API User Management",
+        "version": "1.0.0",
+        "contact": {
+            "name": "Rizky saria",
+            "url": "https://rizkysaria.netlify.app",
+            "email": "mrizkisaria002@gmail.com"
+
+        },
+        "license": {
+            "name": "Rizky-Tech.com"   
+
+        }
+    },
+
+    "servers": [
+        {
+            "url" : "http://localhost:8000",
+            "description": "Production server"
+        }
+    ]
+    ,
+    "paths": {
+        "/api/users/register":{
+            "post":{
+                "description": "Register new User",
+                "requestBody":{
+                    "description": "Register new User",
+                    
+                    "content": {
+                        "application/json":{
+
+                            "examples": {
+                                "example success":{
+                                    "value":{
+                                        "name": "test",
+                                        "email": "test123@test.com",
+                                        "password": "secret123"
+                                    }
+                                },
+                                "example failure missing name":{
+                                    "value":{
+                                        "name": "",
+                                        "email": "test123@test.com",
+                                        "password": "secret123"
+                                    }
+                                },
+                                "example failure missing email":{
+                                    "value":{
+                                        "name": "test",
+                                        "email": "",
+                                        "password": "secret123"
+                                    }
+                                },
+                                "example failure missing password":{
+                                    "value":{
+                                        "name": "test",
+                                        "email": "test123@test.com",
+                                        "password": ""
+                                    }
+                                }
+                            },
+                            "schema":{
+                                "required": 
+                                [
+                                    "name","email","password"  
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "name":{
+                                        "type": "string",
+                                        "minimum": 4,
+                                        "maximum": 100
+                                    },
+                                    "email":{
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password":{
+                                        "type": "string",
+                                        "minimum": 6
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+
+                },
+                "responses": {
+                    "201":{
+                        "description": "User Registration Successfully",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "id":{
+                                            "type": "string",
+                                            "format": "uuid"
+                                        },
+                                        "name":{
+                                            "type": "string"
+                                        },
+                                        "email":{
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "failed to register user",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "error":{
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/login":{
+            "post":{
+                "description": "Login user",
+                "requestBody": {
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                                "required": ["email","password"],
+                                "type": "object",
+                                "properties": {
+                                    "email":{
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "minimum": 6
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200":{
+                        "description": "Login Success",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schema_response"
+                                }
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "Bed Request"
+                    },
+                    "404":{
+                        "description": "user not found",
+                        "content": {}
+                    }
+
+                }
+            }
+        },
+        "/api/users/current":{
+            "description": "get current user",
+            "parameters": [
+                {
+                    "name": "Authentication",
+                    "in": "header"
+                }
+            ],
+            "get":{
+                "responses": {
+                    "200":{
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schema_response"
+                                }
+                            }
+                        }
+                    },
+                    "404":{
+                        "description": "User not found",
+                        "content": {}
+                    },
+                    "400":{
+                        "description": "Unauthorized",
+                        "content": {}
+                    }
+                    
+                }
+            }
+        },
+        "/api/users/update":{
+            "post":{
+                "parameters": [
+                    {
+                        "name": "Authentication",
+                        "in": "header"
+                    }
+                ],
+                "requestBody":{
+                    "content": {
+                        "application/json":{
+                             "schema":{
+                                "$ref": "#/components/schema"
+                             }
+                    
+                        }
+                    }
+                },
+                "responses": {
+                    "200":{
+                        "description": "Update Success",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schema_response"
+                                }
+                            }
+                        }
+                    },
+                    "404":{
+                        "description": "User not found",
+                        "content": {}
+                    },
+                    "400":{
+                        "description": "Unauthorized",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "/api/users/logout":{
+            "description": "user logout",
+            "parameters": [
+                {
+                    "name": "Authentication",
+                    "in": "header"
+                }
+            ],
+            "delete":{
+                "responses": {
+                     "200":{
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                       "data":{
+                                            "type": "boolean"
+                                       },
+                                       "errors":{
+                                            "type": "object"
+                                       }
+                                    }
+                                }
+                            }
+                        }
+                     }
+                }
+            }
+        }
+    },
+    "components": { 
+        "schema":{
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minimum": 4,
+                    "maximum": 100
+                },
+                "email":{
+                    "type": "string",
+                    "format": "email"
+                },
+                "password":{
+                    "type": "string"
+                }
+            }
+        },
+
+        "schema_response":{
+            
+            
+            "type": "object",
+            "properties": {
+                "data":{
+                    "type": "object",
+                    "properties": {
+                        "id":{
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "name":{
+                            "type": "string"
+                        },
+                        "email":{
+                            "type": "string",
+                            "format": "email"
+                        },
+                        "token":{
+                            "type": "string"
+                        }
+
+
+                    }
+                }
+            }
+
+        }
+    },
+    "security": [
+        
+    ]
+
+
+}
