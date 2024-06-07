@@ -12,7 +12,9 @@
 
         },
         "license": {
-            "name": "Rizky-Tech.com"   
+            
+            "name": "Rizky-Tech.com",
+            "url": "https://github.com/sariaRiski02/todolist-api"
 
         }
     },

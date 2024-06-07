@@ -1,0 +1,180 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "todolist Documentation",
+        "description": "API User Management",
+        "version": "1.0.0",
+        "contact": {
+            "name": "Rizky saria",
+            "url": "https://rizkysaria.netlify.app",
+            "email": "mrizkisaria002@gmail.com"
+
+        },
+        "license": {
+            
+            "name": "Rizky-Tech.com",
+            "url": "https://github.com/sariaRiski02/todolist-api"
+
+        }
+    },
+    "servers": [
+        {
+            "url" : "http://localhost:8000",
+            "description": "Production server"
+        }
+    ],
+    "paths": {
+        "/api/todos":{
+            "post":{
+                "parameters": [
+                    {
+                        "name": "Authentication",
+                        "in": "header"
+                    }
+                ],
+                "requestBody":{
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "todo":{
+                                        "type": "string"
+                                    },
+                                    "id_user":{
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200":{
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "data":{
+                                            "type": "object",
+                                            "properties": {
+                                                "id":{
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "todos":{
+                                                    "type": "string"
+                                                
+                                                },
+                                                "id_user":{
+                                                    "type": "string",
+                                                    "format": "uuid"
+
+                                                }
+                                    
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "Add todos failed",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "errors":{
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401":{
+                        "description": "bed request",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "errors":{
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            },
+            "get": {
+                "description": "Get all todos in database",
+                "responses": {
+                    "200":{
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "array",
+                                    "items":{
+                                        "type": "object",
+                                        "properties": {
+                                            "id":{
+                                                "type": "string", 
+                                                "format": "uuid"
+                                            },
+                                            "todo":{
+                                                "type": "string"
+                                            },
+                                            "id_user":{
+                                                "type": "string",
+                                                "format": "uuid"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/todos/{id}":{
+            "get":{
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "data":{
+                                            "type": "array"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            },
+            "put":{},
+            "delete":{}
+        }
+    },
+    "components": {}
+}
