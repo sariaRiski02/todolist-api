@@ -29,6 +29,7 @@
     "paths": {
         "/api/users/register":{
             "post":{
+                "tags": ["Authentication"],
                 "description": "Register new User",
                 "requestBody":{
                     "description": "Register new User",
@@ -136,6 +137,7 @@
         },
         "/api/users/login":{
             "post":{
+                "tags": ["Authentication"],
                 "description": "Login user",
                 "requestBody": {
                     "content": {
@@ -188,6 +190,7 @@
                 }
             ],
             "get":{
+                "tags": ["Authentication"],
                 "responses": {
                     "200":{
                         "content": {
@@ -212,6 +215,7 @@
         },
         "/api/users/update":{
             "post":{
+                "tags": ["Authentication"],
                 "parameters": [
                     {
                         "name": "Authentication",
@@ -251,6 +255,7 @@
             }
         },
         "/api/users/logout":{
+
             "description": "user logout",
             "parameters": [
                 {
@@ -259,6 +264,7 @@
                 }
             ],
             "delete":{
+                "tags": ["Authentication"],
                 "responses": {
                      "200":{
                         "content": {
@@ -276,6 +282,14 @@
                                 }
                             }
                         }
+                     },
+                     "404":{
+                         "description": "User not found",
+                         "content": {}
+                     },
+                     "400":{
+                         "description": "Unauthorized",
+                         "content": {}
                      }
                 }
             }

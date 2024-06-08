@@ -11,6 +11,14 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+
+    public $table = 'users';
+    public $primaryKey = 'id';
+    public $keyType = 'string';
+    public $dateFormat = 'd-m-Y H:i:s';
+    public $incrementing = false;
+
+
     /**
      * The attributes that are mass assignable.
      *
@@ -43,5 +51,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function todo()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
 }

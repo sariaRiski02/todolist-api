@@ -1,5 +1,6 @@
 {
     "openapi": "3.0.0",
+   
     "info": {
         "title": "todolist Documentation",
         "description": "API User Management",
@@ -17,6 +18,9 @@
 
         }
     },
+    "tags": [{
+        "name": "Api todolist"
+    }],
     "servers": [
         {
             "url" : "http://localhost:8000",
@@ -24,8 +28,10 @@
         }
     ],
     "paths": {
+        
         "/api/todos":{
             "post":{
+                "tags": ["Api todolist"],
                 "parameters": [
                     {
                         "name": "Authentication",
@@ -37,15 +43,14 @@
                         "application/json":{
                             "schema":{
                                 "type": "object",
+                                "required": ["title"],
                                 "properties": {
-                                    "todo":{
+                                    "title":{
                                         "type": "string"
                                     },
-                                    "id_user":{
-                                        "type": "string",
-                                        "format": "uuid"
+                                    "description":{
+                                        "type": "string"
                                     }
-
                                 }
                             }
                         }
@@ -65,9 +70,11 @@
                                                     "type": "string",
                                                     "format": "uuid"
                                                 },
-                                                "todos":{
+                                                "title":{
                                                     "type": "string"
-                                                
+                                                },
+                                                "description":{
+                                                    "type": "string"
                                                 },
                                                 "id_user":{
                                                     "type": "string",
@@ -114,57 +121,88 @@
                     }
                 }
 
-            },
-            "get": {
-                "description": "Get all todos in database",
-                "responses": {
-                    "200":{
-                        "content": {
-                            "application/json":{
-                                "schema":{
-                                    "type": "array",
-                                    "items":{
-                                        "type": "object",
-                                        "properties": {
-                                            "id":{
-                                                "type": "string", 
-                                                "format": "uuid"
-                                            },
-                                            "todo":{
-                                                "type": "string"
-                                            },
-                                            "id_user":{
-                                                "type": "string",
-                                                "format": "uuid"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            }  
         },
         "/api/todos/{id}":{
             "get":{
+                "tags": ["Api todolist"],
                 "parameters": [
                     {
-                        "name": "user_id",
-                        "in": "query"
+                        "name": "Authentication",
+                        "in": "header"
+                    },
+                    {
+                        "name": "id",
+                        "in": "path"
                     }
+                   
                 ],
                 "responses": {
                     "200":{
+                        "description": "success get all todo by id",
                         "content": {
                             "application/json":{
                                 "schema":{
                                     "type": "object",
                                     "properties": {
                                         "data":{
-                                            "type": "array"
+                                            "type": "object",
+                                            "properties": {
+                                                "id":{
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "title":{
+                                                    "type": "string"
+                                                
+                                                },
+                                                "description":{
+                                                    "type": "string"
+                                                },
+                                                "completed":{
+                                                    "type": "boolean"
+                                                },
+                                                "id_user":{
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                }
+                                            }
                                         }
                                     }
+                                }
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "errors":{
+                                            "description": "Unauthorized",
+                                            "type": "string"
+                                            
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404":{
+                        "description": "todos not found",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "errors":{
+                                            "description": "todos not found",
+                                            "type": "string"
+                                        }
+                                    }
+                            
                                 }
                             }
                         }
@@ -172,9 +210,149 @@
                 }
 
             },
-            "put":{},
-            "delete":{}
+            "put":{
+                "tags": ["Api todolist"],
+                "parameters": [
+                    {
+                        "name": "Authentication",
+                        "in": "header"
+                    },
+                    {
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "description": "Edit todos by id",
+                "requestBody":{
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "title":{
+                                        "type": "string"
+                                    },
+                                    "description":{
+                                        "type": "string"
+                                    },
+                                    "completed":{
+                                        "type": "boolean"
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200":{
+                        "description": "success update todo",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "id":{
+                                            "type": "string",
+                                            "format": "uuid"
+                                        },
+                                        "title":{
+                                            "type": "string"
+                                        },
+                                        "description":{
+                                            "type": "string"
+                                        },
+                                        "completed":{
+                                            "type": "boolean"
+                                        },
+                                        "id_user":{
+                                            "type": "string",
+                                            "format": "uuid"
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "description": "Unauthorized",
+                                    "properties": {
+                                        "errors":{
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404":{
+                        "description": "todo not found",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "errors":{
+                                            "description": "todo not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete":{
+                "tags": ["Api todolist"],
+                "parameters": [
+                    {
+                        "name": "Authentication",
+                        "in": "header"
+                    },
+                    {
+                        "name": "id",
+                        "in": "path"
+                    }
+                
+                ],
+                "responses": {
+                    "200":{
+                        "description": "success delete todo",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "data":{
+                                            "type": "boolean"
+                                        },
+                                        "errors":{
+                                            "type": "object"
+                                        }
+                                
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    },
+                    "404":{
+                        "description": "todo not found",
+                        "content": {}
+                    },
+                    "400":{
+                        "description": "Unauthorized",
+                        "content": {}
+                    }
+                }
+                
+            }
         }
-    },
-    "components": {}
+    }
 }
