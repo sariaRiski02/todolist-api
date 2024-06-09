@@ -25,6 +25,6 @@ class Todo extends Model
 
     public function user()
     {
-        return $this->hasMany(Todo::class, 'id_user', 'id');
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
 }

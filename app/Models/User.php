@@ -3,9 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Str;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -17,6 +18,7 @@ class User extends Authenticatable
     public $keyType = 'string';
     public $dateFormat = 'd-m-Y H:i:s';
     public $incrementing = false;
+    public $timestamps = false;
 
 
     /**
@@ -28,6 +30,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'token'
     ];
 
     /**
@@ -53,8 +56,17 @@ class User extends Authenticatable
         ];
     }
 
-    public function todo()
+    protected static function boot()
     {
-        return $this->belongsTo(User::class, 'id_user', 'id');
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->{$model->getKeyName()} = (string) Str::uuid();
+        });
+    }
+
+    public function todos()
+    {
+        return $this->hasMany(Todo::class, 'id_user', 'id');
     }
 }

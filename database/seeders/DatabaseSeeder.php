@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Todo;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,8 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        User::factory(3)->create();
 
-        User::factory()->create(5);
+        $user = User::first();
+        Todo::create([
+            'id' => Str::uuid(),
+            'title' => 'First todo',
+            'description' => 'First todo description',
+            'completed' => false,
+            'id_user' => $user->id
+        ]);
     }
 }

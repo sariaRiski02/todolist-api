@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\Todo;
 use Tests\TestCase;
+use App\Models\User;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RelationTest extends TestCase
 {
@@ -13,5 +15,10 @@ class RelationTest extends TestCase
      */
     public function test_relationship()
     {
+        $user = User::first();
+        $todos_from_first_user = $user->todos;
+        $todo = Todo::first();
+
+        $this->assertEquals($todos_from_first_user->first()->id, $todo->id);
     }
 }
