@@ -12,6 +12,7 @@ use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Support\Facades\Password;
 use App\Http\Requests\RegisterUserRequest;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Casts\Json;
 
 class UserController extends Controller
@@ -49,17 +50,33 @@ class UserController extends Controller
         $auth = Auth::user();
         $user = User::find($id);
 
-        if ($auth->header !== $user->token) {
+        if (!$user || $auth->id !== $user->id) {
             return response()->json([
-                'message' => 'Data not found'
+                'error' => 'Data not found'
             ], 401);
         }
         $user->update($data);
         return new UserResource($user);
     }
 
-    public function destroy(string $id)
+    public function logout(string $id)
     {
-        //
+        $auth = Auth::user();
+        $user = User::find($id);
+
+        if (!$user || $auth->id !== $user->id) {
+            return response()->json([
+                'error' => 'Data not found'
+            ], 401);
+        }
+        $auth->token = null;
+        if ($auth instanceof User) {
+            $auth->save();
+        }
+
+
+        return response()->json([
+            "data" => true
+        ]);
     }
 }

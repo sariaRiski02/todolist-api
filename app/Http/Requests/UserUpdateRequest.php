@@ -13,9 +13,7 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $auth = Auth::user();
-        $user = User::find($auth->token);
-        return $user;
+        return Auth::user() !== null;
     }
 
     /**

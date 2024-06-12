@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name', 255)->nullable(false);
             $table->string('email', 255)->nullable(false)->unique();
-            $table->uuid('token')->nullable(true);
+            $table->uuid('token', 255)->nullable(true);
             $table->string('password', 255)->nullable(false);
         });
     }

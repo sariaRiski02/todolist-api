@@ -69,4 +69,48 @@ class User extends Authenticatable
     {
         return $this->hasMany(Todo::class, 'id_user', 'id');
     }
+
+
+    // auth
+    public function getAuthIdentifierName()
+    {
+        return 'email';
+    }
+
+
+
+    public function getAuthIdentifier()
+    {
+        return $this->email;
+    }
+
+
+    public function getAuthPasswordName()
+    {
+        return 'password';
+    }
+
+
+    public function getAuthPassword()
+    {
+        return $this->password;
+    }
+
+
+    public function getRememberToken()
+    {
+        return $this->token;
+    }
+
+
+    public function setRememberToken($value)
+    {
+        $this->token = $value;
+    }
+
+
+    public function getRememberTokenName()
+    {
+        return 'token';
+    }
 }

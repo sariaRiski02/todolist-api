@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('title', 255)->nullable(false);
             $table->text('description')->nullable();
-            $table->boolean('completed')->default(false);
+            $table->boolean('completed')->default(false)->nullable(false);
             $table->uuid('id_user')->references('id')->on('users');
         });
     }

@@ -18,15 +18,32 @@ class Authentication //Authentication
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user_current = Auth::user();
 
-        $user = User::where('token', $user_current->header)->first();
+        // dd('middleware called');
+        $token = $request->header('Authorization');
 
-        if (!$user) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 401);
+        // dd($token);
+        $auth = true;
+        if (!$token) {
+            $auth = false;
         }
+
+        $user = User::where('token', $token)->first();
+        if (!$user) {
+            $auth = false;
+        } else {
+            Auth::login($user);
+        }
+
+        if (!$auth) {
+            return response()->json([
+                "errors" => [
+                    "message" => "Unauthorized"
+                ]
+            ]);
+        }
+
+
         return $next($request);
     }
 }

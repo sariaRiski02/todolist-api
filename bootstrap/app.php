@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Middleware\ApiAuth;
+use App\Http\Middleware\Authentication;
 use Illuminate\Foundation\Application;
-use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -13,7 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append([Authenticate::class]);
+        // $middleware->append([Authentication::class]);
+        // $middleware->append([ApiAuth::class]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

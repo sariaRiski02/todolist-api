@@ -13,6 +13,7 @@ class UserTest extends TestCase
 {
     public function test_User_Register_success()
     {
+
         $response = $this->post('/api/users/register', [
             'name' => "test",
             'email' => "test123@test.com",
@@ -115,7 +116,7 @@ class UserTest extends TestCase
             'password' => ''
         ]);
 
-        $user = User::where('name', 'test-1')->first();
+        // $user = User::where('name', 'test-1')->first();
 
 
         $response->assertJson([
@@ -130,7 +131,7 @@ class UserTest extends TestCase
             'password' => 'test-1'
         ]);
 
-        $user = User::where('name', 'test-1')->first();
+        // $user = User::where('name', 'test-1')->first();
 
 
         $response2->assertJson([
@@ -142,28 +143,89 @@ class UserTest extends TestCase
         ]);
     }
 
+
+    // test middleware
+    public function test_middleware()
+    {
+        $response = $this->put("api/users/update/salah");
+        $response->assertJson([
+            "errors" => [
+                "message" => "Unauthorized"
+            ]
+        ]);
+    }
+
+
     // test for update
 
     public function test_update_success()
     {
         $this->seed([UserSeeder::class]);
-
         $data = [
             'name' => "ganti",
             'email' => "ganti@ganti.com",
             'password' => 'ganti'
         ];
-
-        $token = [
-            'Authorization' => User::first()->token
-        ];
-
-        $response = $this->put('/api/users/update/1', $data, $token);
+        $user = User::first();
+        $id = $user->id;
+        $token = ["Authorization" =>  $user->token];
+        $response = $this->put('/api/users/update/' . $id, $data, $token);
 
         $response->assertJson([
-            "name" => "ganti",
-            "email" => "ganti@ganti.com",
-            "password" => "ganti"
+            "data" => [
+                "name" => "ganti",
+                "email" => "ganti@ganti.com",
+                "token" => $user->token
+            ]
+        ]);
+    }
+
+    public function test_update_failed()
+    {
+        $this->seed([UserSeeder::class]);
+        $data = [
+            'name' => "ganti",
+            'email' => "ganti@ganti.com",
+            'password' => 'ganti'
+        ];
+        $user = User::first();
+        $id = $user->id;
+        $token = ["Authorization" =>  $user->token];
+        $response = $this->put('/api/users/update/' . $id . "salah", $data, $token);
+
+        $response->assertJson([
+            "error" => "Data not found"
+        ]);
+    }
+
+
+    // test for delete
+    public function test_logout_success()
+    {
+        $this->seed([UserSeeder::class]);
+        $user = User::first();
+        $id = $user->id;
+        $token = ["Authorization" =>  $user->token];
+        $response = $this->delete(uri: '/api/users/delete/' . $id, headers: $token);
+
+        $response->assertJson([
+            "data" => true
+        ]);
+
+        $this->assertNull(User::find($id)->token);
+    }
+
+
+    public function test_logout_failed()
+    {
+        $this->seed([UserSeeder::class]);
+        $user = User::first();
+        $id = $user->id;
+        $token = ["Authorization" =>  $user->token];
+        $response = $this->delete(uri: '/api/users/delete/' . $id . "salah", headers: $token);
+
+        $response->assertJson([
+            "error" => "Data not found"
         ]);
     }
 }

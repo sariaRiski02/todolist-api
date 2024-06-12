@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\Todo;
 use Tests\TestCase;
+use App\Models\Todo;
 use App\Models\User;
+use Database\Seeders\TodoSeeder;
+use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -15,10 +17,23 @@ class RelationTest extends TestCase
      */
     public function test_relationship()
     {
+        $this->seed([UserSeeder::class, TodoSeeder::class]);
         $user = User::first();
-        $todos_from_first_user = $user->todos;
-        $todo = Todo::first();
+        $todo = $user->todos->first();
 
-        $this->assertEquals($todos_from_first_user->first()->id, $todo->id);
+
+        // dd($todo);
+
+        if ($todo) {
+            $todo_validated = Todo::where("id_user", $user->id)->first();
+
+            if ($todo_validated) {
+                $this->assertSame($todo->title, $todo_validated->title);
+            } else {
+                $this->assertTrue(false);
+            }
+        } else {
+            $this->assertTrue(false);
+        }
     }
 }
