@@ -21,5 +21,10 @@ Route::middleware([Authentication::class])->group(function () {
     Route::delete('/users/delete/{id}', [UserController::class, 'logout']);
 
     // Route::todos management
-    Route::post('/todos/create', [TodoController::class, 'create']);
+    Route::post('/todos', [TodoController::class, 'create']); // finished 
+    Route::get('/todos', [TodoController::class, 'getAllbyUser']); // finished
+    Route::get('/todos/{id}', [TodoController::class, 'getById']);
+    Route::put('/todos/{id}', [TodoController::class, 'update']);
+    Route::delete('/todos/{id}', [TodoController::class, 'delete']);
+    Route::get('/todos/search', [TodoController::class, 'search']);
 });

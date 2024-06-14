@@ -18,22 +18,8 @@ class RelationTest extends TestCase
     public function test_relationship()
     {
         $this->seed([UserSeeder::class, TodoSeeder::class]);
-        $user = User::first();
-        $todo = $user->todos->first();
-
-
-        // dd($todo);
-
-        if ($todo) {
-            $todo_validated = Todo::where("id_user", $user->id)->first();
-
-            if ($todo_validated) {
-                $this->assertSame($todo->title, $todo_validated->title);
-            } else {
-                $this->assertTrue(false);
-            }
-        } else {
-            $this->assertTrue(false);
-        }
+        $todo = Todo::first();
+        $user = $todo->user;
+        $this->assertEquals($todo->id_user, $user->id);
     }
 }

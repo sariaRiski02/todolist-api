@@ -39,8 +39,9 @@ class Authentication //Authentication
             return response()->json([
                 "errors" => [
                     "message" => "Unauthorized"
-                ]
-            ]);
+                ],
+
+            ], 401);
         }
 
 

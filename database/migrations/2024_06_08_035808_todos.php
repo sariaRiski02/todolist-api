@@ -16,7 +16,10 @@ return new class extends Migration
             $table->string('title', 255)->nullable(false);
             $table->text('description')->nullable();
             $table->boolean('completed')->default(false)->nullable(false);
-            $table->uuid('id_user')->references('id')->on('users');
+            $table->foreignUuid('id_user')->constrained(
+                table: 'users',
+                column: 'id'
+            );
         });
     }
 

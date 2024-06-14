@@ -121,7 +121,59 @@
                     }
                 }
 
-            }  
+            },
+            "get":{
+                "tags": ["Api todolist"],
+                "parameters": [
+                    {
+                        "name": "Authentication",
+                        "in": "header"
+                    }
+                ],
+                "responses":{
+                    "200":{
+
+                        "content": {
+                            "application/json":{
+                                 "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "id":{
+                                            "type": "string",
+                                            "format": "uuid"
+                                        },
+                                        "title":{
+                                            "type": "string"
+
+                                        },
+                                        "description":{
+                                            "type": "string"
+                                        },
+                                        "completed":{
+                                            "type": "boolean"
+                                        }
+                                    }
+                                 }
+                            }
+                        }
+                    },
+                    "400":{
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "errors":{
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
         },
         "/api/todos/{id}":{
             "get":{

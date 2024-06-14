@@ -3,12 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CreateTodoRequest extends FormRequest
+class TodoUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,13 +30,12 @@ class CreateTodoRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
-            'title' => 'required|string',
-            'description' => 'string'
+            'title' => 'string',
+            'description' => 'string',
+            'completed' => "boolean"
         ];
     }
-
 
     protected function failedValidation(Validator $validator)
     {

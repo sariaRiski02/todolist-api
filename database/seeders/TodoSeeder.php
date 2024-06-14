@@ -16,13 +16,19 @@ class TodoSeeder extends Seeder
     public function run(): void
     {
 
-        for ($i = 1; $i <= 5; $i++) {
+        $ids = User::pluck('id')->toArray();
+
+
+
+
+        for ($i = 1; $i <= 20; $i++) {
+            $randomId = $ids[array_rand($ids)];
             Todo::create([
                 'id' => Str::uuid(),
                 'title' => 'todo ke' . $i,
                 'description' => 'First todo description' . $i,
                 'completed' => false,
-                'id_user' => User::inRandomOrder()->first()->id
+                'id_user' => $randomId
             ]);
         }
     }
