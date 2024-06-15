@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Todo;
+use App\Models\User;
+
 use Illuminate\Http\Request;
-use GuzzleHttp\Promise\Create;
+use Illuminate\Support\Facades\Log;
+
+
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\TodosResources;
 use App\Http\Requests\CreateTodoRequest;
-use App\Http\Requests\TodoUpdateRequest;
-use Illuminate\Support\Facades\Auth;
 
-use function PHPUnit\Framework\isNull;
+use App\Http\Requests\TodoUpdateRequest;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class TodoController extends Controller
 {
@@ -51,13 +55,13 @@ class TodoController extends Controller
         $current_user = Auth::user();
         $todo = Todo::where('id_user', $current_user->id);
         if (!$todo) {
-            $this->DataNotFound();
+            return  $this->DataNotFound();
         }
         if (in_array($id, $todo->pluck('id')->toArray())) {
             $todo = $todo->where('id', $id)->first();
             return new TodosResources($todo);
         } else {
-            $this->DataNotFound();
+            return  $this->DataNotFound();
         }
     }
 
@@ -68,7 +72,7 @@ class TodoController extends Controller
         $current_user = Auth::user();
         $todo = Todo::where('id_user', $current_user->id);
         if (!$todo) {
-            $this->DataNotFound();
+            return  $this->DataNotFound();
         }
         if (in_array($id, $todo->pluck('id')->toArray())) {
 
@@ -89,7 +93,35 @@ class TodoController extends Controller
 
             return new TodosResources($todo);
         } else {
-            $this->DataNotFound();
+            return  $this->DataNotFound();
         }
+    }
+
+    public function delete($id)
+    {
+        $user = Auth::user();
+        if ($user instanceof User) {
+            $todo = $user->todos()->where('id', $id)->first();
+        }
+        if ($todo === null) {
+            return $this->DataNotFound();
+        }
+        $result = $todo->delete();
+        return $result ?? false;
+    }
+
+
+    public function search(Request $request)
+    {
+        $user = Auth::user();
+        $todo = Todo::where('id_user', $user->id);
+
+        $search = $request->input('search');
+        $todos = $todo->whereAny(['title', 'description'], "LIKE", "%$search%")->get();
+        if ($todos->isEmpty()) {
+            return $this->DataNotFound();
+        }
+
+        return TodosResources::collection($todos);
     }
 }

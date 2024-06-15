@@ -99,9 +99,9 @@ class TodoTest extends TestCase
         ]);
 
         $response->assertStatus(200);
-        $response->assertJson([
-            User::first()->todos->toArray()
-        ]);
+        $response->assertJson(
+            ["data" => User::first()->todos->toArray()]
+        );
     }
 
 
@@ -178,6 +178,100 @@ class TodoTest extends TestCase
         $todo = $user->todos->first();
         $response->assertJson([
             "data" => $todo->toArray()
+        ]);
+    }
+
+
+    public function test_deleteTodoSuccess()
+    {
+        $this->seed([UserSeeder::class, TodoSeeder::class]);
+        $user = User::first();
+        $todo_id = $user->todos->first()->id;
+        $response = $this->delete(uri: "/api/todos/$todo_id", headers: [
+            "Authorization" => $user->token
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('todos', ['id' => $todo_id]);
+        $response->assertExactJson([1]); // expected true = 1
+
+    }
+
+    public function test_deleteTodoFailedUnauthorized()
+    {
+        $this->seed([UserSeeder::class, TodoSeeder::class]);
+        $user = User::first();
+        $todo_id = $user->todos->first()->id;
+        $response = $this->delete(uri: "/api/todos/$todo_id", headers: [
+            "Authorization" => "salah"
+        ]);
+
+        $response->assertStatus(401);
+        $response->assertJson([
+            "errors" => [
+                "message" => "Unauthorized"
+            ]
+        ]);
+    }
+
+    public function test_deleteTodoFailed()
+    {
+        $this->seed([UserSeeder::class, TodoSeeder::class]);
+        $user = User::first();
+        $response = $this->delete(uri: "/api/todos/Id_wrong", headers: [
+            "Authorization" => $user->token
+        ]);
+
+        $response->assertjson([
+            "errors" => [
+                "message" => "Todo not found"
+            ]
+        ]);
+    }
+
+    public function test_SearchSuccess()
+    {
+        $this->seed([userSeeder::class, TodoSeeder::class]);
+        $user = User::first();
+        $todo = $user->todos->first();
+        // dd($todo->title);
+        $response = $this->post(
+            "/api/todos/search",
+            [
+                "search" => $todo->title
+            ],
+            [
+                "Authorization" => $user->token
+            ]
+        );
+
+        $response->assertJson([
+            "data" => [
+                $todo->toArray()
+            ]
+        ]);
+    }
+
+    public function testSearchFailed()
+    {
+        $this->seed([userSeeder::class, TodoSeeder::class]);
+        $user = User::first();
+        $todo = $user->todos->first();
+        // dd($todo->title);
+        $response = $this->post(
+            "/api/todos/search",
+            [
+                "search" => "empty"
+            ],
+            [
+                "Authorization" => $user->token
+            ]
+        );
+
+        $response->assertJson([
+            "errors" => [
+                "message" => "Todo not found"
+            ]
         ]);
     }
 }
